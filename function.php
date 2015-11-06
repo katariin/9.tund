@@ -3,9 +3,9 @@
 		require_once("../configglobal.php");
 		require_once("user.class.php");
 		
-		$database = "if15_jekavor"
+		$database = "if15_jekavor";
 		
-		session_start();
+		//session_start();
 		
         $mysqli = new mysqli($servername, $server_username, $server_password, $database);
 
@@ -13,8 +13,6 @@
 		$User = new User($mysqli);
 		
 		//var_dump($User_connection);
-		
-		
-		
+				
 ?>		
 	

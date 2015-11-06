@@ -42,7 +42,25 @@
       // Kui oleme siia joudnud, voime kasutaja sisse logida
 			if($password_error == "" && $email_error == ""){
 				echo "Voib sisse logida! Kasutajanimi on ".$email." ja parool on ".$password;
-				
+			
+                 password_hash=hash("sha512", $password);
+				 
+				 $login_response = $User->loginUser($email, $password_hash);
+				 
+				 if(isset($login_response->success)){
+					 
+					 echo "<pre>"
+					 var_dump($login_response);
+					 echo "</pre>"
+					 
+					 //läks edukalt
+					 //nüüd peaks kasutjaja sessioone salvestama
+					 //$_SESSION["id_from_db"] = $login_response->success->user->id;
+					 //$_SESSION["user_email"] = ?
+					 
+					 
+				 }
+			
 			}
 		} // login if end
     // *********************
@@ -120,9 +138,9 @@
   
   <?php elseif(isset($create_response->success)): ?>
   
-  <p style="color:green"> </p>
+  <p style="color:green"></p>
   
-  <?php elseif: ?>
+  <?php endif; ?>
   
   <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post" >
   	E-mail: <input name="create_email" type="email" placeholder="E-post"> <?php echo $create_email_error; ?>*<br><br>

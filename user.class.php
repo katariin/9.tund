@@ -4,7 +4,7 @@
 class User {
 	
 	     //privaatne muutuja
-		 public $connection;
+		 private $connection;
 		   
 		 //funktsioon, mis käivitub siis, kui
           // on ! NEW User();
@@ -57,7 +57,13 @@ class User {
 			$success = new StdClass();
 			$success ->message = "Kasutaja edukalt salvestanud";
 			
-			$response->success = $success	
+			$user = new StdClass();
+			$user->id=$id_from_db;
+			$user->email=$email_from_db;
+			
+			$success->user = $user;
+			
+			$response->success = $success;
 		
         }else{
 			// midagi läks katki
@@ -71,9 +77,12 @@ class User {
 		
 		}
 		//saada tagasi vastuse, kas success või error
-		return $response;
 		
 		$stmt->close();
+		
+		return $response;
+		
+		
 				
 	}  
 		   
@@ -85,14 +94,48 @@ class User {
 		$stmt->bind_result($id_from_db, $email_from_db);
 		$stmt->execute();
 		   
-		if($stmt->fetch()){
-			echo "kasutaja id=".$id_from_db;   
-		   }else{
-			echo "Wrong password or email!";
+		// ei ole sellist kasutajat - !
+		if(!$stmt->fetch()){
+			
+			// saadan tagasi errori
+			$error = new StdClass();
+			$error->id = 0;
+			$error->message = "Sellise e-postiga kasutajat ei ole olemas!";
+			
+			//panen errori responsile külge
+			$response->error = $error;
+			
+			// pärast returni enam koodi edasi ei vaadata funktsioonis
+			return $response;
+			
 		}
 		$stmt->close();
 		
+		$stmt = $this->connection->prepare("SELECT id, email FROM user_sample WHERE email=? AND password=?");
+		$stmt->bind_param("ss", $email, $password_hash);
+		$stmt->bind_result($id_from_db, $email_from_db);
+		$stmt->execute();
+		if($stmt->fetch()){
+			// edukalt sai kätte
+			$success = new StdClass();
+			$success->message = "Kasutaja edukalt sisse logitud";
+			
+			$response->success = $success;
+			
+		}else{
+			// midagi läks katki
+			$error = new StdClass();
+			$error->id =1;
+			$error->message = "Vale parool!";
+			
+			//panen errori responsile külge
+			$response->error = $error;
 		}
+		
+		$stmt->close();
+		
+		return $response;
+	}
 }?>
 
 
