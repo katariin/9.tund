@@ -24,7 +24,7 @@ class User {
 		
 		//kas selline email on juba olemas
 		$stmt = $this->connection->prepare("SELECT email FROM user_sample WHERE email = ?");
-		$stmt->bind_param("ss", $create_email);
+		$stmt->bind_param("s", $create_email);
 		$stmt->execute();
 		
 		if ($stmt->fetch()) {
@@ -87,7 +87,9 @@ class User {
 	}  
 		   
 		function loginUser($email, $password_hash){
-			
+		
+
+		 $response = new StdClass();		
 		
 		$stmt = $this->connection->prepare("SELECT id, email FROM user_sample WHERE email=? AND password=?");
 		$stmt->bind_param("ss", $email, $password_hash);
@@ -105,10 +107,11 @@ class User {
 			//panen errori responsile külge
 			$response->error = $error;
 			
-			// pärast returni enam koodi edasi ei vaadata funktsioonis
 			return $response;
-			
 		}
+		
+		// pärast returni enam koodi edasi ei vaadata funktsiooni
+		
 		$stmt->close();
 		
 		$stmt = $this->connection->prepare("SELECT id, email FROM user_sample WHERE email=? AND password=?");

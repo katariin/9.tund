@@ -43,20 +43,30 @@
 			if($password_error == "" && $email_error == ""){
 				echo "Voib sisse logida! Kasutajanimi on ".$email." ja parool on ".$password;
 			
-                 password_hash=hash("sha512", $password);
+                 $password_hash=hash("sha512", $password);
 				 
 				 $login_response = $User->loginUser($email, $password_hash);
 				 
 				 if(isset($login_response->success)){
 					 
-					 echo "<pre>"
-					 var_dump($login_response);
-					 echo "</pre>"
+					 //echo "<pre>"
+					 //var_dump($login_response);
+					 //echo "</pre>"
 					 
 					 //läks edukalt
 					 //nüüd peaks kasutjaja sessioone salvestama
-					 //$_SESSION["id_from_db"] = $login_response->success->user->id;
-					 //$_SESSION["user_email"] = ?
+					 $_SESSION["id_from_db"] = $login_response->success->user->id;
+					 $_SESSION["user_email"] = $login_response->success->user->email;
+					 
+					 header("Location: data.php");
+					 
+					 //****************
+					 //*******OLULINE*********
+					 //*******************
+					 
+					 //lõpetame PHP laadimise
+					 exit();
+					 
 					 
 					 
 				 }
